@@ -49,6 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imagePath = $products['image'];
 
         if($image && $image['tmp_name']){
+
+            if($image['products']){
+                unlink($image['products']);
+            }
+
             $imagePath = 'images/'.randomString(8).'/'.$image['name'];
             mkdir(dirname($imagePath));
             move_uploaded_file($image['tmp_name'],$imagePath);
