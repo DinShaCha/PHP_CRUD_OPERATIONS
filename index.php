@@ -4,9 +4,18 @@ $dbname = "product_crud";
 $dbuser = "root";
 $dbpass = "";
 
-$pdo = new PDO("mysql:host=localhost;port=8111;dbname=$dbname", $dbuser , $dbpass);
+$pdo = new PDO("mysql:host=localhost;port=8111;dbname=$dbname", $dbuser, $dbpass);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$statement = $pdo->prepare("SELECT * FROM products ORDER BY create_date DESC");
+$search = $_GET['search'] ?? '';
+
+if($search){
+    $statement = $pdo->prepare("SELECT * FROM products WHERE title like :title ORDER BY create_date DESC");
+    $statement->bindValue(':title',"%$search%");
+
+}else{
+    $statement = $pdo->prepare("SELECT * FROM products ORDER BY create_date DESC");
+}
+
 $statement->execute();
 $products = $statement->fetchall(PDO::FETCH_ASSOC);
 
@@ -29,6 +38,13 @@ $products = $statement->fetchall(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+    <form>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search for products" name='search'>
+            <button class="btn btn-outline-secondary" type="submit">Button</button>
+        </div>
+    </form>
     <table class="table">
         <thead>
             <tr>
